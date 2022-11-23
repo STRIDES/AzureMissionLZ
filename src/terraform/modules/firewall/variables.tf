@@ -29,17 +29,12 @@ variable "vnet_address_space" {
 variable "firewall_sku_name" {
   description = "SKU name of the Firewall. Possible values are AZFW_Hub and AZFW_VNet."
   type        = string
+  default     = "AZFW_Hub"
 }
 
 variable "firewall_sku" {
   description = "The SKU for Azure Firewall"
   type        = string
-}
-
-variable "firewall_sku_name" {
-  description = "SKU name for Azure Firewall."
-  type = string
-  default = "AZFW_Hub"
 }
 
 variable "client_address_space" {
@@ -110,14 +105,14 @@ variable "disable_snat_ip_range" {
 
 # Diagnostic Setting Variables
 variable "eventhub_namespace_authorization_rule_id" {
-  description = "Event Hub Authorization Rule to use for diagnostic settings." 
-  type = string
-  default = null
-  sensitive = true
+  description = "Event Hub Authorization Rule to use for diagnostic settings."
+  type        = string
+  default     = null
+  sensitive   = true
 }
 
 variable "eventhub_name" {
   description = "Event Hub Name to use for diagnostic settings."
-  type = string
-  default = null
+  type        = string
+  default     = null
 }
