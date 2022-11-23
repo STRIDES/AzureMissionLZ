@@ -376,8 +376,8 @@ module "hub-subnets" {
   address_prefixes     = module.hub_subnet_params[each.key].address_prefixes
   service_endpoints    = lookup(each.value, "service_endpoints", [])
 
-  enforce_private_link_endpoint_network_policies = lookup(each.value, "enforce_private_link_endpoint_network_policies", null)
-  enforce_private_link_service_network_policies  = lookup(each.value, "enforce_private_link_service_network_policies", null)
+  private_endpoint_network_policies_enabled = lookup(each.value, "enforce_private_link_endpoint_network_policies", null)
+  private_link_network_policies_enabled     = lookup(each.value, "enforce_private_link_service_network_policies", null)
 
   nsg_rules_names = concat(lookup(each.value, "default_nsg_rules", []), lookup(each.value, "nsg_rules", []))
   nsg_rules_map   = module.hub_subnet_params[each.key].nsg_rules
