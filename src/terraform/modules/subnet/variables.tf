@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
+# All Resources
+
 variable "name" {
   description = "The name of the subnet"
   type        = string
@@ -16,6 +18,26 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+}
+
+
+# NSG
+
+variable "nsg_rules_names" {
+  description = "List of nsg rule names."
+  type        = list(string)
+  default     = []
+}
+
+variable "nsg_rules_map" {
+  description = "Map of NSG rules with arguments."
+}
+
+# Subnet
+
 variable "virtual_network_name" {
   description = "The name of the subnet's virtual network"
   type        = string
@@ -24,61 +46,49 @@ variable "virtual_network_name" {
 variable "address_prefixes" {
   description = "The subnet address prefixes"
   type        = list(string)
+  sensitive   = true
 }
 
 variable "service_endpoints" {
   description = "The service endpoints to optimize for this subnet"
   type        = list(string)
+  default     = null
 }
 
 variable "private_endpoint_network_policies_enabled" {
   description = "Enable or Disable network policies for the private endpoint on the subnet."
   type        = bool
+  default     = false
 }
 
 variable "private_link_service_network_policies_enabled" {
   description = "Enable or Disable network policies for the private link service on the subnet."
   type        = bool
+  default     = false
 }
 
-variable "nsg_name" {
-  description = "The name of the subnet's virtual network"
-  type        = string
-}
 
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-}
-
-variable "nsg_rules" {
-  description = "A collection of azurerm_network_security_rule"
-  type = map(object({
-    name                       = string
-    priority                   = string
-    direction                  = string
-    access                     = string
-    protocol                   = string
-    source_port_range          = string
-    destination_port_range     = string
-    source_address_prefix      = string
-    destination_address_prefix = string
-  }))
-}
-
-variable "routetable_name" {
-  description = "The name of the subnet's route table"
-  type        = string
-}
+# Route Table
 
 variable "firewall_ip_address" {
   description = "The IP Address of the Firewall"
   type        = string
 }
 
+
+# Logging
+
 variable "log_analytics_storage_id" {
   description = "The id of the storage account that stores log analytics diagnostic logs"
   type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "flow_log_storage_id" {
+  type      = string
+  default   = null
+  sensitive = true
 }
 
 variable "log_analytics_workspace_id" {
@@ -98,6 +108,19 @@ variable "log_analytics_workspace_resource_id" {
 
 variable "flow_log_retention_in_days" {
   description = "The number of days to retain flow log data"
-  default     = "7"
+  default     = "90"
   type        = number
+}
+
+variable "eventhub_namespace_authorization_rule_id" {
+  description = "Event Hub Authorization Rule to use for diagnostic settings."
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "eventhub_name" {
+  description = "Event Hub Name to use for diagnostic settings."
+  type        = string
+  default     = null
 }

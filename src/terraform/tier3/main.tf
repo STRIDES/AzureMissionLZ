@@ -1,30 +1,11 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
-terraform {
-  # It is recommended to use remote state instead of local
-  # If you are using Terraform Cloud, You can update these values in order to configure your remote state.
-  /*  backend "remote" {
-    organization = "{{ORGANIZATION_NAME}}"
-    workspaces {
-      name = "{{WORKSPACE_NAME}}"
-    }
-  }
-  */
-  backend "local" {}
 
-  required_version = ">= 1.2.9"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "= 3.23.0"
-    }
-  }
-}
-
+// Default subscription is tier 1. Be specific for other subscriptions.
 provider "azurerm" {
   environment     = var.environment
   metadata_host   = var.metadata_host
-  subscription_id = var.hub_subid
+  subscription_id = var.tier1_subid
 
   features {
     log_analytics_workspace {
@@ -96,6 +77,14 @@ resource "azurerm_resource_group" "tier3" {
   tags     = var.tags
 }
 
+resource "azurerm_resource_group_policy_exemption" "exempt" {
+  for_each             = toset(var.tier3_rg_exemptions)
+  name                 = "${var.short_name}-exemption-${index(var.tier3_rg_exemptions, each.value)}"
+  resource_group_id    = azurerm_resource_group.tier3.id
+  policy_assignment_id = each.value
+  exemption_category   = "Waiver"
+}
+
 ################################
 ### STAGE 1: Logging         ###
 ################################
@@ -107,82 +96,74 @@ data "azurerm_log_analytics_workspace" "laws" {
   resource_group_name = var.laws_rgname
 }
 
-// Central Logging
-locals {
-  log_categories = ["Administrative", "Security", "ServiceHealth", "Alert", "Recommendation", "Policy", "Autoscale", "ResourceHealth"]
-}
-
-resource "azurerm_monitor_diagnostic_setting" "tier3-central" {
-  count              = var.tier3_subid != var.hub_subid ? 1 : 0
-  provider           = azurerm.tier3
-  name               = "tier3-central-diagnostics"
-  target_resource_id = "/subscriptions/${var.tier3_subid}"
-
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.laws.id
-
-  dynamic "log" {
-    for_each = local.log_categories
-    content {
-      category = log.value
-      enabled  = true
-
-      retention_policy {
-        days    = 0
-        enabled = false
-      }
-    }
-  }
-}
-
 ################################
 ### STAGE 2: Networking      ###
 ################################
 
 data "azurerm_virtual_network" "hub" {
+  provider = azurerm.hub
+
   name                = var.hub_vnetname
   resource_group_name = var.hub_rgname
 }
 
 module "spoke-network-t3" {
-  providers  = { azurerm = azurerm.tier3 }
-  depends_on = [azurerm_resource_group.tier3]
+  count = length(var.tier3_vnet_address_space) == 0 ? 0 : 1
+  providers = {
+    azurerm       = azurerm.tier3
+    azurerm.tier1 = azurerm.tier1
+  }
+  depends_on = [azurerm_resource_group.tier3, azurerm_resource_group_policy_exemption.exempt]
   source     = "../modules/spoke"
+
+  environment              = var.environment
+  metadata_host            = var.metadata_host
+  tier1_subid              = var.tier1_subid
+  terraform_key_vault_name = var.terraform_key_vault_name
+  terraform_key_vault_rg   = var.terraform_key_vault_rg
+  param_secret_prefix      = lower(var.short_name)
 
   location = azurerm_resource_group.tier3.location
 
   firewall_private_ip = var.firewall_private_ip
 
-  laws_location     = var.location
-  laws_workspace_id = data.azurerm_log_analytics_workspace.laws.workspace_id
-  laws_resource_id  = data.azurerm_log_analytics_workspace.laws.id
+  laws_location       = var.location
+  laws_workspace_id   = sensitive(data.azurerm_log_analytics_workspace.laws.workspace_id)
+  laws_resource_id    = sensitive(data.azurerm_log_analytics_workspace.laws.id)
+  flow_log_storage_id = var.flow_log_storage_id
 
-  spoke_rgname             = var.tier3_rgname
+  spoke_rgname             = azurerm_resource_group.tier3.name
   spoke_vnetname           = var.tier3_vnetname
   spoke_vnet_address_space = var.tier3_vnet_address_space
   subnets                  = var.tier3_subnets
   tags                     = var.tags
 }
 
+# JC Note: Re enable gateway transit once ExpressRoute Gateway is present.
 resource "azurerm_virtual_network_peering" "t3-to-hub" {
+  count      = length(var.tier3_vnet_address_space) == 0 ? 0 : 1
   provider   = azurerm.tier3
   depends_on = [azurerm_resource_group.tier3, module.spoke-network-t3]
 
   name                         = "${var.tier3_vnetname}-to-${var.hub_vnetname}"
   resource_group_name          = var.tier3_rgname
   virtual_network_name         = var.tier3_vnetname
-  remote_virtual_network_id    = data.azurerm_virtual_network.hub.id
+  remote_virtual_network_id    = sensitive(data.azurerm_virtual_network.hub.id)
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
+  use_remote_gateways          = true
 }
 
 resource "azurerm_virtual_network_peering" "hub-to-t3" {
+  count      = length(var.tier3_vnet_address_space) == 0 ? 0 : 1
   provider   = azurerm.hub
   depends_on = [module.spoke-network-t3]
 
   name                         = "${var.hub_vnetname}-to-${var.tier3_vnetname}"
   resource_group_name          = var.hub_rgname
   virtual_network_name         = var.hub_vnetname
-  remote_virtual_network_id    = module.spoke-network-t3.virtual_network_id
+  remote_virtual_network_id    = module.spoke-network-t3[0].virtual_network_id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
+  allow_gateway_transit        = true
 }

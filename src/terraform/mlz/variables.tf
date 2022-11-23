@@ -26,6 +26,11 @@ variable "location" {
 variable "resourcePrefix" {
   description = "A name for the deployment. It defaults to mlz."
   type        = string
+}
+
+variable "resourceSuffix" {
+  description = "Suffix for resource names."
+  type        = string
   default     = "mlz"
 }
 
@@ -37,6 +42,23 @@ variable "tags" {
   }
 }
 
+variable "flow_log_storage_id" {
+  description = "Storage account to ship nsg flow logs to"
+  type        = string
+  default     = null
+}
+
+variable "terraform_key_vault_name" {
+  description = "Name of the Params Key Vault"
+  type        = string
+  sensitive   = true
+}
+
+variable "terraform_key_vault_rg" {
+  description = "RG Name of the Params Key Vault"
+  type        = string
+}
+
 #################################
 # Hub Configuration
 #################################
@@ -44,6 +66,13 @@ variable "tags" {
 variable "hub_subid" {
   description = "Subscription ID for the Hub deployment"
   type        = string
+  sensitive   = true
+}
+
+variable "hub_short_name" {
+  description = "Short name of Hub Sub for templates."
+  type        = string
+  default     = "hub"
 }
 
 variable "hub_rgname" {
@@ -55,29 +84,71 @@ variable "hub_rgname" {
 variable "hub_vnetname" {
   description = "Virtual Network Name for the deployment"
   type        = string
-  default     = "hub-vnet"
+  default     = "vnet-hub"
 }
 
 variable "hub_vnet_address_space" {
   description = "The address space to be used for the virtual network."
   type        = list(string)
   default     = ["10.0.100.0/24"]
+  sensitive   = true
 }
+
+variable "hub_subnets" {
+  description = "A complex object that describes subnets."
+  type = map(object({
+    name              = string
+    service_endpoints = list(string)
+
+    enforce_private_link_endpoint_network_policies = bool
+    enforce_private_link_service_network_policies  = bool
+
+    default_nsg_rules = list(string)
+    nsg_rules         = list(string)
+  }))
+  default = {
+    "hubSubnet" = {
+      name              = "hubSubnet"
+      service_endpoints = ["Microsoft.Storage"]
+
+      enforce_private_link_endpoint_network_policies = false
+      enforce_private_link_service_network_policies  = false
+
+      default_nsg_rules = ["DenyHighRisk", "AllowNIHNetIn", "AllowNIHNetOut"]
+      nsg_rules         = []
+    }
+  }
+}
+
 
 #################################
 # Firewall configuration section
 #################################
 
+variable "create_firewall" {
+  description = "Create a firewall?"
+  type        = bool
+  default     = true
+}
+
+variable "custom_firewall_ip" {
+  description = "IP address of customer firewall solution."
+  default     = ""
+  type        = string
+}
+
 variable "hub_client_address_space" {
   description = "The address space to be used for the Firewall virtual network."
   type        = string
   default     = "10.0.100.0/26"
+  sensitive   = true
 }
 
 variable "hub_management_address_space" {
   description = "The address space to be used for the Firewall virtual network subnet used for management traffic."
   type        = string
   default     = "10.0.100.64/26"
+  sensitive   = true
 }
 
 variable "firewall_name" {
@@ -142,6 +213,7 @@ variable "bastion_address_space" {
   description = "The address space to be used for the Bastion Host subnet (must be /27 or larger)."
   type        = string
   default     = "10.0.100.128/27"
+  sensitive   = true
 }
 
 variable "bastion_public_ip_name" {
@@ -172,15 +244,15 @@ variable "jumpbox_subnet" {
 
     nsg_name = string
     nsg_rules = map(object({
-      name                       = string
-      priority                   = string
-      direction                  = string
-      access                     = string
-      protocol                   = string
-      source_port_range          = string
-      destination_port_range     = string
-      source_address_prefix      = string
-      destination_address_prefix = string
+      name                         = string
+      priority                     = string
+      direction                    = string
+      access                       = string
+      protocol                     = string
+      source_port_ranges           = list(string)
+      destination_port_ranges      = list(string)
+      source_address_prefixes      = list(string)
+      destination_address_prefixes = list(string)
     }))
 
     routetable_name = string
@@ -196,26 +268,26 @@ variable "jumpbox_subnet" {
     nsg_name = "jumpbox-subnet-nsg"
     nsg_rules = {
       "allow_ssh" = {
-        name                       = "allow_ssh"
-        priority                   = "100"
-        direction                  = "Inbound"
-        access                     = "Allow"
-        protocol                   = "Tcp"
-        source_port_range          = "22"
-        destination_port_range     = ""
-        source_address_prefix      = "*"
-        destination_address_prefix = ""
+        name                         = "allow_ssh"
+        priority                     = "100"
+        direction                    = "Inbound"
+        access                       = "Allow"
+        protocol                     = "Tcp"
+        source_port_ranges           = ["22"]
+        destination_port_ranges      = ["*"]
+        source_address_prefixes      = ["*"]
+        destination_address_prefixes = ["*"]
       },
       "allow_rdp" = {
-        name                       = "allow_rdp"
-        priority                   = "200"
-        direction                  = "Inbound"
-        access                     = "Allow"
-        protocol                   = "Tcp"
-        source_port_range          = "3389"
-        destination_port_range     = ""
-        source_address_prefix      = "*"
-        destination_address_prefix = ""
+        name                         = "allow_rdp"
+        priority                     = "200"
+        direction                    = "Inbound"
+        access                       = "Allow"
+        protocol                     = "Tcp"
+        source_port_ranges           = ["3389"]
+        destination_port_ranges      = ["*"]
+        source_address_prefixes      = ["*"]
+        destination_address_prefixes = ["*"]
       }
     }
 
@@ -319,6 +391,13 @@ variable "tier0_subid" {
   description = "Subscription ID for the deployment"
   type        = string
   default     = ""
+  sensitive   = true
+}
+
+variable "tier0_short_name" {
+  description = "Short name of Tier0 Sub for templates."
+  type        = string
+  default     = "tier0"
 }
 
 variable "tier0_rgname" {
@@ -330,76 +409,38 @@ variable "tier0_rgname" {
 variable "tier0_vnetname" {
   description = "Virtual Network Name for the deployment"
   type        = string
-  default     = "identity-vnet"
+  default     = "vnet-identity"
 }
 
 variable "tier0_vnet_address_space" {
   description = "Address space prefixes list of strings"
   type        = list(string)
   default     = ["10.0.110.0/26"]
+  sensitive   = true
 }
 
 variable "tier0_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
     name              = string
-    address_prefixes  = list(string)
     service_endpoints = list(string)
 
     enforce_private_link_endpoint_network_policies = bool
     enforce_private_link_service_network_policies  = bool
 
-    nsg_name = string
-    nsg_rules = map(object({
-      name                       = string
-      priority                   = string
-      direction                  = string
-      access                     = string
-      protocol                   = string
-      source_port_range          = string
-      destination_port_range     = string
-      source_address_prefix      = string
-      destination_address_prefix = string
-    }))
-
-    routetable_name = string
+    default_nsg_rules = list(string)
+    nsg_rules         = list(string)
   }))
   default = {
     "identitySubnet" = {
       name              = "identitySubnet"
-      address_prefixes  = ["10.0.110.0/27"]
       service_endpoints = ["Microsoft.Storage"]
 
       enforce_private_link_endpoint_network_policies = false
       enforce_private_link_service_network_policies  = false
 
-      nsg_name = "identitySubnetNsg"
-      nsg_rules = {
-        "allow_ssh" = {
-          name                       = "allow_ssh"
-          priority                   = "100"
-          direction                  = "Inbound"
-          access                     = "Allow"
-          protocol                   = "Tcp"
-          source_port_range          = "22"
-          destination_port_range     = ""
-          source_address_prefix      = "*"
-          destination_address_prefix = ""
-        },
-        "allow_rdp" = {
-          name                       = "allow_rdp"
-          priority                   = "200"
-          direction                  = "Inbound"
-          access                     = "Allow"
-          protocol                   = "Tcp"
-          source_port_range          = "3389"
-          destination_port_range     = ""
-          source_address_prefix      = "*"
-          destination_address_prefix = ""
-        }
-      }
-
-      routetable_name = "identityRouteTable"
+      default_nsg_rules = ["DenyHighRisk", "AllowNIHNetIn", "AllowNIHNetOut"]
+      nsg_rules         = []
     }
   }
 }
@@ -412,6 +453,13 @@ variable "tier1_subid" {
   description = "Subscription ID for the deployment"
   type        = string
   default     = ""
+  sensitive   = true
+}
+
+variable "tier1_short_name" {
+  description = "Short name of Tier 1 Sub for templates."
+  type        = string
+  default     = "tier1"
 }
 
 variable "tier1_rgname" {
@@ -423,13 +471,13 @@ variable "tier1_rgname" {
 variable "tier1_vnetname" {
   description = "Virtual Network Name for the deployment"
   type        = string
-  default     = "operations-vnet"
+  default     = "vnet-operations"
 }
 
 variable "log_analytics_workspace_name" {
   description = "Log Analytics Workspace Name for the deployment"
   type        = string
-  default     = ""
+  default     = "log-operations"
 }
 
 variable "create_sentinel" {
@@ -442,69 +490,31 @@ variable "tier1_vnet_address_space" {
   description = "Address space prefixes for the virtual network"
   type        = list(string)
   default     = ["10.0.115.0/26"]
+  sensitive   = true
 }
 
 variable "tier1_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
     name              = string
-    address_prefixes  = list(string)
     service_endpoints = list(string)
 
     enforce_private_link_endpoint_network_policies = bool
     enforce_private_link_service_network_policies  = bool
 
-    nsg_name = string
-    nsg_rules = map(object({
-      name                       = string
-      priority                   = string
-      direction                  = string
-      access                     = string
-      protocol                   = string
-      source_port_range          = string
-      destination_port_range     = string
-      source_address_prefix      = string
-      destination_address_prefix = string
-    }))
-
-    routetable_name = string
+    default_nsg_rules = list(string)
+    nsg_rules         = list(string)
   }))
   default = {
     "operationsSubnet" = {
       name              = "operationsSubnet"
-      address_prefixes  = ["10.0.115.0/27"]
       service_endpoints = ["Microsoft.Storage"]
 
       enforce_private_link_endpoint_network_policies = false
       enforce_private_link_service_network_policies  = false
 
-      nsg_name = "operationsSubnetNsg"
-      nsg_rules = {
-        "allow_ssh" = {
-          name                       = "allow_ssh"
-          priority                   = "100"
-          direction                  = "Inbound"
-          access                     = "Allow"
-          protocol                   = "Tcp"
-          source_port_range          = "22"
-          destination_port_range     = ""
-          source_address_prefix      = "*"
-          destination_address_prefix = ""
-        },
-        "allow_rdp" = {
-          name                       = "allow_rdp"
-          priority                   = "200"
-          direction                  = "Inbound"
-          access                     = "Allow"
-          protocol                   = "Tcp"
-          source_port_range          = "3389"
-          destination_port_range     = ""
-          source_address_prefix      = "*"
-          destination_address_prefix = ""
-        }
-      }
-
-      routetable_name = "operationsRouteTable"
+      default_nsg_rules = ["DenyHighRisk", "AllowNIHNetIn", "AllowNIHNetOut"]
+      nsg_rules         = []
     }
   }
 }
@@ -517,6 +527,13 @@ variable "tier2_subid" {
   description = "Subscription ID for the deployment"
   type        = string
   default     = ""
+  sensitive   = true
+}
+
+variable "tier2_short_name" {
+  description = "Short name of Tier 2 Sub for templates."
+  type        = string
+  default     = "tier2"
 }
 
 variable "tier2_rgname" {
@@ -528,76 +545,58 @@ variable "tier2_rgname" {
 variable "tier2_vnetname" {
   description = "Virtual Network Name for the deployment"
   type        = string
-  default     = "sharedServices-vnet"
+  default     = "vnet-sharedServices"
 }
 
 variable "tier2_vnet_address_space" {
   description = "Address space prefixes list of strings"
   type        = list(string)
   default     = ["10.0.120.0/26"]
+  sensitive   = true
 }
 
 variable "tier2_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
     name              = string
-    address_prefixes  = list(string)
     service_endpoints = list(string)
 
     enforce_private_link_endpoint_network_policies = bool
     enforce_private_link_service_network_policies  = bool
 
-    nsg_name = string
-    nsg_rules = map(object({
-      name                       = string
-      priority                   = string
-      direction                  = string
-      access                     = string
-      protocol                   = string
-      source_port_range          = string
-      destination_port_range     = string
-      source_address_prefix      = string
-      destination_address_prefix = string
-    }))
-
-    routetable_name = string
+    default_nsg_rules = list(string)
+    nsg_rules         = list(string)
   }))
   default = {
     "sharedServicesSubnet" = {
       name              = "sharedServicesSubnet"
-      address_prefixes  = ["10.0.120.0/27"]
       service_endpoints = ["Microsoft.Storage"]
 
       enforce_private_link_endpoint_network_policies = false
       enforce_private_link_service_network_policies  = false
 
-      nsg_name = "sharedServicesSubnetNsg"
-      nsg_rules = {
-        "allow_ssh" = {
-          name                       = "allow_ssh"
-          priority                   = "100"
-          direction                  = "Inbound"
-          access                     = "Allow"
-          protocol                   = "Tcp"
-          source_port_range          = "22"
-          destination_port_range     = ""
-          source_address_prefix      = "*"
-          destination_address_prefix = ""
-        },
-        "allow_rdp" = {
-          name                       = "allow_rdp"
-          priority                   = "200"
-          direction                  = "Inbound"
-          access                     = "Allow"
-          protocol                   = "Tcp"
-          source_port_range          = "3389"
-          destination_port_range     = ""
-          source_address_prefix      = "*"
-          destination_address_prefix = ""
-        }
-      }
-
-      routetable_name = "sharedServicesRouteTable"
+      default_nsg_rules = ["DenyHighRisk", "AllowNIHNetIn", "AllowNIHNetOut"]
+      nsg_rules         = []
     }
   }
+}
+
+# Diagnostic Setting Variables
+variable "eventhub_namespace_authorization_rule_id" {
+  description = "Event Hub Authorization Rule to use for diagnostic settings."
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "eventhub_name_activity" {
+  description = "Event Hub Name to use for insights actvity."
+  type        = string
+  default     = null
+}
+
+variable "eventhub_name_logs" {
+  description = "Event Hub Name to use for logs."
+  type        = string
+  default     = null
 }
