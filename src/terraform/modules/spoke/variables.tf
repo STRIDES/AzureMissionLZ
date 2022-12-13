@@ -45,6 +45,12 @@ variable "spoke_vnetname" {
   type        = string
 }
 
+variable "overwrite_prefix" {
+  description = "Overwrites the standard naming convention for resource prefixes."
+  type        = string
+  default     = ""
+}
+
 # Param Key Vault
 
 variable "environment" {

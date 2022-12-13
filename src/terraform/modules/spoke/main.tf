@@ -9,6 +9,10 @@ terraform {
   }
 }
 
+locals {
+  subnet_prefix = var.overwrite_prefix == "" ? var.param_secret_prefix : var.overwrite_prefix
+}
+
 # VNet
 
 module "spoke-network" {
@@ -44,7 +48,7 @@ module "subnets" {
   source     = "../subnet"
   for_each   = var.subnets
 
-  name                 = "${var.param_secret_prefix}-subnet-${each.value.name}"
+  name                 = "${local.subnet_prefix}-subnet-${each.value.name}"
   location             = var.location
   resource_group_name  = var.spoke_rgname
   virtual_network_name = var.spoke_vnetname

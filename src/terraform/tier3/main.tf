@@ -122,6 +122,7 @@ module "spoke-network-t3" {
   terraform_key_vault_name = var.terraform_key_vault_name
   terraform_key_vault_rg   = var.terraform_key_vault_rg
   param_secret_prefix      = lower(var.short_name)
+  overwrite_prefix         = var.overwrite_prefix
 
   location = azurerm_resource_group.tier3.location
 

@@ -30,6 +30,12 @@ variable "tags" {
   }
 }
 
+variable "overwrite_prefix" {
+  description = "Overwrites the standard naming convention for resource prefixes."
+  type        = string
+  default     = ""
+}
+
 #################################
 # Hub Configuration
 #################################
