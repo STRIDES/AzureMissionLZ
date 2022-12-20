@@ -58,10 +58,9 @@ module "subnets" {
   private_endpoint_network_policies_enabled     = lookup(each.value, "private_endpoint_network_policies_enabled", null)
   private_link_service_network_policies_enabled = lookup(each.value, "private_link_service_network_policies_enabled", null)
 
-  nsg_rules_names        = concat(each.value.default_nsg_rules, each.value.nsg_rules)
-  nsg_rules_map          = module.subnet_params[each.key].nsg_rules
-  custom_nsg_rg          = var.custom_nsg_rg
-  custom_nsg_ignore_list = var.custom_nsg_ignore_list
+  nsg_rules_names = concat(each.value.default_nsg_rules, each.value.nsg_rules)
+  nsg_rules_map   = module.subnet_params[each.key].nsg_rules
+  custom_nsg_rg   = var.custom_nsg_rg
 
   firewall_ip_address = var.firewall_private_ip
 

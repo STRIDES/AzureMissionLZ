@@ -42,12 +42,6 @@ variable "custom_nsg_rg" {
   default     = ""
 }
 
-variable "custom_nsg_ignore_list" {
-  description = "List of nsg attributes to ignore for customer managed nsgs."
-  type        = list(string)
-  default     = []
-}
-
 # Subnet
 
 variable "virtual_network_name" {

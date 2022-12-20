@@ -164,12 +164,6 @@ variable "custom_nsg_rg" {
   default     = ""
 }
 
-variable "custom_nsg_ignore_list" {
-  description = "List of nsg attributes to ignore for customer managed nsgs."
-  type        = list(string)
-  default     = []
-}
-
 # Flow Log Storage Account
 variable "flow_log_storage_id" {
   description = "Storage account to ship nsg flow logs to"
