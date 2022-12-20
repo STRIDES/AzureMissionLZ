@@ -112,6 +112,18 @@ variable "subnets" {
   }))
 }
 
+variable "custom_nsg_rg" {
+  description = "Name of RG for customer managed NSGs."
+  type        = string
+  default     = ""
+}
+
+variable "custom_nsg_ignore_list" {
+  description = "List of nsg attributes to ignore for customer managed nsgs."
+  type        = list(string)
+  default     = []
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

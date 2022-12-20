@@ -9,9 +9,11 @@ locals {
 
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.name}-nsg"
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.custom_nsg_rg == "" ? var.resource_group_name : var.custom_nsg_rg
   location            = var.location
-
+  lifecycle {
+    ignore_changes = merge([], var.custom_nsg_ignore_list)
+  }
   tags = var.tags
 }
 

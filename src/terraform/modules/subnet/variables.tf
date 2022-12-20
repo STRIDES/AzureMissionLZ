@@ -36,6 +36,18 @@ variable "nsg_rules_map" {
   description = "Map of NSG rules with arguments."
 }
 
+variable "custom_nsg_rg" {
+  description = "Name of RG for customer managed NSGs."
+  type        = string
+  default     = ""
+}
+
+variable "custom_nsg_ignore_list" {
+  description = "List of nsg attributes to ignore for customer managed nsgs."
+  type        = list(string)
+  default     = []
+}
+
 # Subnet
 
 variable "virtual_network_name" {
@@ -66,6 +78,7 @@ variable "private_link_service_network_policies_enabled" {
   type        = bool
   default     = false
 }
+
 
 
 # Route Table

@@ -137,6 +137,8 @@ module "spoke-network-t3" {
   spoke_vnetname           = var.tier3_vnetname
   spoke_vnet_address_space = var.tier3_vnet_address_space
   subnets                  = var.tier3_subnets
+  custom_nsg_rg            = var.custom_nsg_rg
+  custom_nsg_ignore_list   = var.custom_nsg_ignore_list
   tags                     = var.tags
 }
 
