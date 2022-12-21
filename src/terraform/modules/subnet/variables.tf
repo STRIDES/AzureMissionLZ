@@ -18,6 +18,12 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "overwrite_prefix" {
+  description = "Overwrites the standard naming convention for resource prefixes."
+  type        = string
+  default     = ""
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

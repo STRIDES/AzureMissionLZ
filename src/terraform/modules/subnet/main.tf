@@ -41,7 +41,7 @@ resource "azurerm_network_security_rule" "nsgrules" {
 }
 
 # Subnet
-
+# JC Note: Ignore changes name to accomadate legacy naming conventions
 resource "azurerm_subnet" "subnet" {
   name                 = var.name
   resource_group_name  = var.resource_group_name
@@ -52,6 +52,11 @@ resource "azurerm_subnet" "subnet" {
 
   private_endpoint_network_policies_enabled     = var.private_endpoint_network_policies_enabled
   private_link_service_network_policies_enabled = var.private_link_service_network_policies_enabled
+  lifecycle {
+    ignore_changes = [
+      name
+    ]
+  }
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg" {
