@@ -62,6 +62,11 @@ resource "azurerm_subnet" "subnet" {
 resource "azurerm_subnet_network_security_group_association" "nsg" {
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
+  lifecycle {
+    ignore_changes = [
+      name
+    ]
+  }
 }
 
 
