@@ -12,6 +12,11 @@ resource "azurerm_network_security_group" "nsg" {
   resource_group_name = var.custom_nsg_rg == "" ? var.resource_group_name : var.custom_nsg_rg
   location            = var.location
   tags                = var.tags
+  lifecycle {
+    ignore_changes = [
+      name
+    ]
+  }
 }
 
 # JC Note: Key Vault parameters cause destruction setting ignore_changes to mitigate.
@@ -62,11 +67,6 @@ resource "azurerm_subnet" "subnet" {
 resource "azurerm_subnet_network_security_group_association" "nsg" {
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
-  lifecycle {
-    ignore_changes = [
-      name
-    ]
-  }
 }
 
 
