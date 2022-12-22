@@ -121,6 +121,8 @@ variable "custom_nsg_rg" {
 variable "dns_server_list" {
   description = "List of IP addresses for custom dns servers."
   type        = list(string)
+  default     = []
+  sensitive   = true
 }
 
 variable "tags" {
