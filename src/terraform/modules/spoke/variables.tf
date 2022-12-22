@@ -118,6 +118,11 @@ variable "custom_nsg_rg" {
   default     = ""
 }
 
+variable "dns_server_list" {
+  description = "List of IP addresses for custom dns servers."
+  type        = list(string)
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

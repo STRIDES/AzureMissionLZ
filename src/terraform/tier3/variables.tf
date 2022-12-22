@@ -164,6 +164,11 @@ variable "custom_nsg_rg" {
   default     = ""
 }
 
+variable "dns_server_list" {
+  description = "List of IP addresses for custom dns servers."
+  type        = list(string)
+}
+
 # Flow Log Storage Account
 variable "flow_log_storage_id" {
   description = "Storage account to ship nsg flow logs to"

@@ -12,19 +12,8 @@ resource "azurerm_virtual_network" "vnet" {
   tags                = var.tags
 }
 
-# JC Note: Switch to central Flow Log Storage Account
-# resource "random_id" "storageaccount" {
-#   byte_length = 12
-# }
-
-# resource "azurerm_storage_account" "loganalytics" {
-#   name                      = format("%.24s", lower(replace("${azurerm_virtual_network.vnet.name}logs${random_id.storageaccount[0].id}", "/[[:^alnum:]]/", "")))
-#   resource_group_name       = var.resource_group_name
-#   location                  = var.location
-#   account_kind              = "StorageV2"
-#   account_tier              = "Standard"
-#   account_replication_type  = "LRS"
-#   enable_https_traffic_only = true
-#   min_tls_version           = "TLS1_2"
-#   tags                      = var.tags
-# }
+resource "azurerm_virtual_network_dns_servers" "custom_dns" {
+  count              = length(var.dns_server_list) == 0 ? 0 : 1
+  virtual_network_id = azurerm_virtual_network.vnet.id
+  dns_servers        = sensitive(var.dns_server_list)
+}

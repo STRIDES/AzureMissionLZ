@@ -339,6 +339,7 @@ module "hub-network" {
   resource_group_name = azurerm_resource_group.hub.name
   vnet_name           = "${var.resourcePrefix}-${var.hub_vnetname}-${var.resourceSuffix}"
   vnet_address_space  = var.hub_vnet_address_space
+  dns_server_list     = var.dns_server_list
 
   client_address_space     = var.hub_client_address_space
   management_address_space = var.hub_management_address_space
@@ -460,6 +461,7 @@ module "spoke-network-t0" {
   spoke_vnetname           = "${var.resourcePrefix}-${var.tier0_vnetname}-${var.resourceSuffix}"
   spoke_vnet_address_space = var.tier0_vnet_address_space
   subnets                  = var.tier0_subnets
+  dns_server_list          = var.dns_server_list
   tags                     = merge(var.tags, { "resourcePrefix" = "${var.resourcePrefix}" })
 }
 
@@ -519,6 +521,7 @@ module "spoke-network-t1" {
   spoke_vnetname           = "${var.resourcePrefix}-${var.tier1_vnetname}-${var.resourceSuffix}"
   spoke_vnet_address_space = var.tier1_vnet_address_space
   subnets                  = var.tier1_subnets
+  dns_server_list          = var.dns_server_list
   tags                     = merge(var.tags, { "resourcePrefix" = "${var.resourcePrefix}" })
 }
 
@@ -578,6 +581,7 @@ module "spoke-network-t2" {
   spoke_vnetname           = "${var.resourcePrefix}-${var.tier2_vnetname}-${var.resourceSuffix}"
   spoke_vnet_address_space = var.tier2_vnet_address_space
   subnets                  = var.tier2_subnets
+  dns_server_list          = var.dns_server_list
   tags                     = merge(var.tags, { "resourcePrefix" = "${var.resourcePrefix}" })
 }
 

@@ -27,6 +27,11 @@ variable "vnet_address_space" {
   type        = list(string)
 }
 
+variable "dns_server_list" {
+  description = "List of IP addresses for custom dns servers."
+  type        = list(string)
+}
+
 variable "client_address_space" {
   description = "The address space to be used for the Firewall virtual network subnet used for client traffic."
   type        = string

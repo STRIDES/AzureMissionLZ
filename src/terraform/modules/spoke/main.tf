@@ -21,6 +21,7 @@ module "spoke-network" {
   resource_group_name                 = var.spoke_rgname
   vnet_name                           = var.spoke_vnetname
   vnet_address_space                  = var.spoke_vnet_address_space
+  dns_server_list                     = var.dns_server_list
   log_analytics_workspace_resource_id = var.laws_resource_id
 
   tags = var.tags

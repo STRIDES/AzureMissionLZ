@@ -59,6 +59,11 @@ variable "terraform_key_vault_rg" {
   type        = string
 }
 
+variable "dns_server_list" {
+  description = "List of IP addresses for custom dns servers."
+  type        = list(string)
+}
+
 #################################
 # Hub Configuration
 #################################
