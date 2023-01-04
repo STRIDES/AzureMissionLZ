@@ -74,7 +74,11 @@ resource "azurerm_resource_group" "tier3" {
 
   location = var.location
   name     = var.tier3_rgname
-  tags     = var.tags
+  tags = merge(var.tags,
+    {
+      "LOCK" : "CIT-ReadOnly"
+    }
+  )
 }
 
 resource "azurerm_resource_group_policy_exemption" "exempt" {
