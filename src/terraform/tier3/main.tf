@@ -148,7 +148,7 @@ module "spoke-network-t3" {
 
 # JC Note: Re enable gateway transit once ExpressRoute Gateway is present.
 resource "azurerm_virtual_network_peering" "t3-to-hub" {
-  count      = length(var.tier3_vnet_address_space) == 0 ? 0 : 1
+  count      = (length(var.tier3_vnet_address_space) == 0 || var.tier3_vnet_disable_peering) ? 0 : 1
   provider   = azurerm.tier3
   depends_on = [azurerm_resource_group.tier3, module.spoke-network-t3]
 
@@ -162,7 +162,7 @@ resource "azurerm_virtual_network_peering" "t3-to-hub" {
 }
 
 resource "azurerm_virtual_network_peering" "hub-to-t3" {
-  count      = length(var.tier3_vnet_address_space) == 0 ? 0 : 1
+  count      = (length(var.tier3_vnet_address_space) == 0 || var.tier3_vnet_disable_peering) ? 0 : 1
   provider   = azurerm.hub
   depends_on = [module.spoke-network-t3]
 

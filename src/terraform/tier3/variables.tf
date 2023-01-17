@@ -158,6 +158,12 @@ variable "tier3_subnets" {
   }
 }
 
+variable "tier3_vnet_disable_peering" {
+  description = "Flag to disable Hub VNet Peering."
+  type        = bool
+  default     = false
+}
+
 variable "custom_nsg_rg" {
   description = "Name of RG for customer managed NSGs."
   type        = string
