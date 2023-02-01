@@ -117,6 +117,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
   }
   lifecycle {
     ignore_changes = [
+      name,
       log
     ]
   }
@@ -148,4 +149,9 @@ resource "azurerm_network_watcher_flow_log" "nsgfl" {
     interval_in_minutes   = 10
   }
   tags = var.tags
+  lifecycle {
+    ignore_changes = [
+      name
+    ]
+  }
 }
