@@ -43,7 +43,7 @@ resource "null_resource" "cmk-rotation-policy" {
   }
   provisioner "local-exec" {
     command = <<EOT
-az keyvault key rotation-policy update --vault-name ${var.key_vault_name} --name ${azurerm_key_vault_key.cmk.name} --value ../cmk-key-vault/rotation-policy.json
+az keyvault key rotation-policy update --vault-name ${var.key_vault_name} --name ${azurerm_key_vault_key.cmk.name} --value ${path.module}/../cmk-key-vault/rotation-policy.json
     EOT
   }
 }
