@@ -1,3 +1,21 @@
+locals {
+  defender_types = [
+    "AppServices",
+    "ContainerRegistry",
+    "KeyVaults",
+    "KubernetesService",
+    "SqlServers",
+    "SqlServerVirtualMachines",
+    "StorageAccounts",
+    "VirtualMachines",
+    "Arm",
+    "Dns",
+    "OpenSourceRelationalDatabases",
+    "Containers",
+    "CloudPosture"
+  ]
+}
+
 # Set Subscription RBAC
 resource "azurerm_role_assignment" "sub_owner" {
   for_each             = toset(var.sub_owners)
@@ -15,54 +33,21 @@ resource "azurerm_security_center_contact" "security_contact" {
 }
 
 # Enable Audited Defender Solutions
+# JC Note: Ignore tier change to allow customers to upgrade, but not remove.
 
-resource "azurerm_security_center_subscription_pricing" "defender_sql" {
+resource "azurerm_security_center_subscription_pricing" "defender" {
+  for_each      = toset(local.defender_types)
   tier          = var.defender_tier
-  resource_type = "SqlServers"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_containers" {
-  tier          = var.defender_tier
-  resource_type = "Containers"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_arm" {
-  tier          = var.defender_tier
-  resource_type = "Arm"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_kv" {
-  tier          = var.defender_tier
-  resource_type = "KeyVaults"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_app_services" {
-  tier          = var.defender_tier
-  resource_type = "AppServices"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_dns" {
-  tier          = var.defender_tier
-  resource_type = "Dns"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_servers" {
-  tier          = var.defender_tier
-  resource_type = "VirtualMachines"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_storage" {
-  tier          = var.defender_tier
-  resource_type = "StorageAccounts"
-}
-
-resource "azurerm_security_center_subscription_pricing" "defender_sql_vm" {
-  tier          = var.defender_tier
-  resource_type = "SqlServerVirtualMachines"
+  resource_type = each.value
+  lifecycle {
+    ignore_changes = [
+      tier
+    ]
+  }
 }
 
 # Enable Log Analytics Agent Auto-provisioning
 
 resource "azurerm_security_center_auto_provisioning" "laws_agent" {
-  auto_provision = "On"
+  auto_provision = var.laws_agent
 }

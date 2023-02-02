@@ -174,3 +174,11 @@ resource "azurerm_virtual_network_peering" "hub-to-t3" {
   allow_forwarded_traffic      = true
   allow_gateway_transit        = true
 }
+
+# Subscription Security Features
+module "security" {
+  providers {
+    azurerm = azurerm.tier3
+  }
+  source = "../modules/subscription-security"
+}

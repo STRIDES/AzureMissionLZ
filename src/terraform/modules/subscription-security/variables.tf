@@ -14,10 +14,17 @@ variable "sub_owners" {
 variable "security_contact_email" {
   description = "Email address to send security notifications to."
   type        = string
+  default     = "citcloudservicesazurealerts@mail.nih.gov"
 }
 
 variable "defender_tier" {
   description = "Whether Defender Standard or Free tier should be used."
   type        = string
-  default     = "Standard"
+  default     = "Free"
+}
+
+variable "laws_agent" {
+  description = "Whether to enable laws agent autoprovisioning."
+  type        = string
+  default     = "On"
 }
