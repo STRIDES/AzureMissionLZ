@@ -70,6 +70,18 @@ variable "endpoint_subnet_id" {
   default     = null
 }
 
+variable "override_default_network_rule" {
+  description = "Override for default network rule."
+  type        = string
+  default     = "Deny"
+}
+
+variable "network_rule_bypass" {
+  description = "List of services to bypass network rules."
+  type        = list(string)
+  default     = ["AzureServices", "Logging", "Metrics"]
+}
+
 variable "ip_network_rules" {
   description = "List of IP ranges to add to network rules."
   type        = list(string)

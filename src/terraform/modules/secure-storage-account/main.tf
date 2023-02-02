@@ -82,8 +82,8 @@ resource "azurerm_storage_account" "secure" {
 
 resource "azurerm_storage_account_network_rules" "secure" {
   storage_account_id         = sensitive(azurerm_storage_account.secure.id)
-  default_action             = "Deny"
-  bypass                     = ["AzureServices", "Logging", "Metrics"]
+  default_action             = var.override_default_network_rule
+  bypass                     = var.network_rule_bypass
   ip_rules                   = var.ip_network_rules
   virtual_network_subnet_ids = var.subnet_id_network_rules
 }
