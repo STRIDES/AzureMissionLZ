@@ -177,7 +177,7 @@ resource "azurerm_virtual_network_peering" "hub-to-t3" {
 
 # Subscription Security Features
 module "security" {
-  providers {
+  providers = {
     azurerm = azurerm.tier3
   }
   source = "../modules/subscription-security"
