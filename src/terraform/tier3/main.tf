@@ -132,7 +132,7 @@ module "spoke-network-t3" {
 
   firewall_private_ip = var.firewall_private_ip
 
-  laws_location       = var.location
+  laws_location       = data.azurerm_log_analytics_workspace.laws.location
   laws_workspace_id   = sensitive(data.azurerm_log_analytics_workspace.laws.workspace_id)
   laws_resource_id    = sensitive(data.azurerm_log_analytics_workspace.laws.id)
   flow_log_storage_id = var.flow_log_storage_id
