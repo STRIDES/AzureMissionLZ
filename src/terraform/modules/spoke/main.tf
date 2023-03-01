@@ -24,7 +24,8 @@ module "spoke-network" {
   dns_server_list                     = var.dns_server_list
   log_analytics_workspace_resource_id = var.laws_resource_id
 
-  tags = var.tags
+  tags      = var.tags
+  ipam_tags = var.ipam_tags
 }
 
 # Subnets

@@ -130,6 +130,12 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "ipam_tags" {
+  description = "A map of tags to be added only to the vnets for ipam."
+  type        = map(string)
+  default     = {}
+}
+
 # Diagnostic Setting Variables
 variable "eventhub_namespace_authorization_rule_id" {
   description = "Event Hub Authorization Rule to use for diagnostic settings."

@@ -39,3 +39,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "ipam_tags" {
+  description = "A map of tags to be added only to the vnets for ipam."
+  type        = map(string)
+  default     = {}
+}

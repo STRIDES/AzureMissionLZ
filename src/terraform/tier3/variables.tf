@@ -183,3 +183,9 @@ variable "flow_log_storage_id" {
   type        = string
   default     = null
 }
+
+variable "ipam_tags" {
+  description = "A map of tags to be added only to the vnets for ipam."
+  type        = map(string)
+  default     = {}
+}

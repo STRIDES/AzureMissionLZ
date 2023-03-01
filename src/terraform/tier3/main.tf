@@ -144,6 +144,7 @@ module "spoke-network-t3" {
   custom_nsg_rg            = var.custom_nsg_rg
   dns_server_list          = var.dns_server_list
   tags                     = var.tags
+  ipam_tags                = var.ipam_tags
 }
 
 # JC Note: Re enable gateway transit once ExpressRoute Gateway is present.
