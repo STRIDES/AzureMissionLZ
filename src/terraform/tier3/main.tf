@@ -140,6 +140,7 @@ module "spoke-network-t3" {
   spoke_rgname             = azurerm_resource_group.tier3.name
   spoke_vnetname           = var.tier3_vnetname
   spoke_vnet_address_space = var.tier3_vnet_address_space
+  subnets_address_spaces   = var.tier3_subnet_address_spaces
   subnets                  = var.tier3_subnets
   custom_nsg_rg            = var.custom_nsg_rg
   dns_server_list          = var.dns_server_list

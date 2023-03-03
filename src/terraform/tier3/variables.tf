@@ -137,6 +137,7 @@ variable "tier3_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
     name              = string
+    address_space     = list(string)
     service_endpoints = list(string)
 
     enforce_private_link_endpoint_network_policies = bool
@@ -148,6 +149,7 @@ variable "tier3_subnets" {
   default = {
     "tier3subnet" = {
       name              = "tier3Subnet"
+      address_space     = []
       service_endpoints = ["Microsoft.Storage"]
 
       enforce_private_link_endpoint_network_policies = false

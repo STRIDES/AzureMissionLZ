@@ -20,6 +20,11 @@ variable "name" {
   type        = string
 }
 
+variable "address_space" {
+  description = "Templated address space. If empty address space will be retrieved from Key Vault"
+  type        = list(string)
+}
+
 variable "default_nsg_rules" {
   description = "List of default nsg rules to include from the Params Key Vault"
   type        = list(string)

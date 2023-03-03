@@ -41,6 +41,7 @@ module "subnet_params" {
   param_secret_prefix      = var.param_secret_prefix
 
   name              = each.value.name
+  address_space     = each.value.address_space
   default_nsg_rules = each.value.default_nsg_rules
   nsg_rules         = each.value.nsg_rules
 }

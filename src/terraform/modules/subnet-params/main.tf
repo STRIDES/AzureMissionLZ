@@ -4,6 +4,7 @@ data "azurerm_key_vault" "terraform_vault" {
 }
 
 data "azurerm_key_vault_secret" "address_prefixes" {
+  count        = length(var.address_space) == 0 ? 1 : 0
   name         = "${var.param_secret_prefix}-${lower(var.name)}"
   key_vault_id = sensitive(data.azurerm_key_vault.terraform_vault.id)
 }
