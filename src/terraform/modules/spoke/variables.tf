@@ -98,13 +98,6 @@ variable "spoke_vnet_address_space" {
   sensitive   = true
 }
 
-variable "subnet_address_spaces" {
-  description = "List of subnet address spaces"
-  type        = list(list(string))
-  default     = null
-  sensitive   = true
-}
-
 variable "subnets" {
   description = "A complex object that describes subnets for the spoke network"
   type = map(object({
