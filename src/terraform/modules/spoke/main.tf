@@ -57,6 +57,7 @@ module "subnets" {
   virtual_network_name = var.spoke_vnetname
   address_prefixes     = module.subnet_params[each.key].address_prefixes
   service_endpoints    = lookup(each.value, "service_endpoints", [])
+  subnet_delegations   = lookup(each.value, "subnet_delegations", [])
 
   private_endpoint_network_policies_enabled     = lookup(each.value, "private_endpoint_network_policies_enabled", null)
   private_link_service_network_policies_enabled = lookup(each.value, "private_link_service_network_policies_enabled", null)

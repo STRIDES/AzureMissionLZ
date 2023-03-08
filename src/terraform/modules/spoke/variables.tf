@@ -101,9 +101,10 @@ variable "spoke_vnet_address_space" {
 variable "subnets" {
   description = "A complex object that describes subnets for the spoke network"
   type = map(object({
-    name              = string
-    address_space     = list(string)
-    service_endpoints = list(string)
+    name               = string
+    address_space      = list(string)
+    service_endpoints  = list(string)
+    subnet_delegations = list(string)
 
     enforce_private_link_endpoint_network_policies = bool
     enforce_private_link_service_network_policies  = bool

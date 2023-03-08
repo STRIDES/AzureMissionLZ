@@ -137,3 +137,9 @@ variable "eventhub_name" {
   type        = string
   default     = null
 }
+
+variable "subnet_delegations" {
+  description = "List of Microsoft Services to delegate subnet to."
+  type        = list(string)
+  default     = []
+}
