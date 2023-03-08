@@ -61,7 +61,7 @@ resource "azurerm_subnet" "subnet" {
   dynamic "delegation" {
     for_each = var.subnet_delegations
     content {
-      name = split("/", delegation.value)[-1]
+      name = reverse(split("/", delegation.value))[0]
       service_delegation {
         name = delegation.value
       }
