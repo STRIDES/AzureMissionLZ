@@ -189,6 +189,7 @@ resource "random_id" "finished" {
   keepers = {
     "always" = "${timestamp()}"
   }
+  byte_length = 8
   depends_on = [
     azurerm_resource_group.tier3,
     azurerm_resource_group_policy_exemption.exempt,
