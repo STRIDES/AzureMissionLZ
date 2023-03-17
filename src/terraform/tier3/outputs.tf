@@ -3,6 +3,10 @@ output "tier3_rg_name" {
 }
 
 output "tier3_rg_id" {
-  value = azurerm_resource_group.tier3.id
+  value     = azurerm_resource_group.tier3.id
   sensitive = true
+}
+
+output "finished_trigger" {
+  value = random_id.finished.id
 }

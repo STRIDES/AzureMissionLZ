@@ -183,3 +183,18 @@ module "security" {
   }
   source = "../modules/subscription-security"
 }
+
+# Module Finished Trigger
+resource "random_id" "finished" {
+  keepers = {
+    "always" = "${timestamp()}"
+  }
+  depends_on = [
+    azurerm_resource_group.tier3,
+    azurerm_resource_group_policy_exemption.exempt,
+    module.spoke-network-t3,
+    azurerm_virtual_network_peering.t3-to-hub,
+    azurerm_virtual_network_peering.hub-to-t3,
+    module.security
+  ]
+}
