@@ -74,7 +74,7 @@ resource "azurerm_subnet" "subnet" {
       name,
       # JC Note: Ignore delegation name and actions because Azure changes these automatically
       delegation[0].name,
-      delegation[0].service_delegation.actions
+      delegation[0].service_delegation[0].actions
     ]
   }
 }
