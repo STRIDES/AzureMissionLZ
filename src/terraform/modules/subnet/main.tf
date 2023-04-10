@@ -73,8 +73,8 @@ resource "azurerm_subnet" "subnet" {
       # JC Note: Ignore changes name to accomadate legacy naming conventions
       name,
       # JC Note: Ignore delegation name and actions because Azure changes these automatically
-      delegation.*.name,
-      delegation.*.service_delegation.actions
+      delegation[0].name,
+      delegation[0].service_delegation.actions
     ]
   }
 }
