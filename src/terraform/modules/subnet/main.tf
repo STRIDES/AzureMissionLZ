@@ -46,7 +46,6 @@ resource "azurerm_network_security_rule" "nsgrules" {
 }
 
 # Subnet
-# JC Note: Ignore changes name to accomadate legacy naming conventions
 resource "azurerm_subnet" "subnet" {
   name                 = var.name
   resource_group_name  = var.resource_group_name
@@ -71,7 +70,11 @@ resource "azurerm_subnet" "subnet" {
 
   lifecycle {
     ignore_changes = [
-      name
+      # JC Note: Ignore changes name to accomadate legacy naming conventions
+      name,
+      # JC Note: Ignore delegation name and actions because Azure changes these automatically
+      delegation.*.name,
+      delegation.*.service_delegation.actions
     ]
   }
 }
