@@ -47,7 +47,8 @@ resource "azurerm_security_center_subscription_pricing" "defender" {
 }
 
 # Enable Log Analytics Agent Auto-provisioning
+# JC Note: This has been deprecated. Removing.
 
-resource "azurerm_security_center_auto_provisioning" "laws_agent" {
-  auto_provision = var.laws_agent
-}
+# resource "azurerm_security_center_auto_provisioning" "laws_agent" {
+#   auto_provision = var.laws_agent
+# }
