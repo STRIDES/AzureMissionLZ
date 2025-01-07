@@ -102,6 +102,7 @@ variable "subnets" {
   description = "A complex object that describes subnets for the spoke network"
   type = map(object({
     name               = string
+    exclude_prefix     = bool
     address_space      = list(string)
     service_endpoints  = list(string)
     subnet_delegations = list(string)

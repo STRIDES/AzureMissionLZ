@@ -137,6 +137,7 @@ variable "tier3_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
     name               = string
+    exclude_prefix     = bool
     address_space      = list(string)
     service_endpoints  = list(string)
     subnet_delegations = list(string)
@@ -150,6 +151,7 @@ variable "tier3_subnets" {
   default = {
     "tier3subnet" = {
       name               = "tier3Subnet"
+      exclude_prefix     = false
       address_space      = []
       service_endpoints  = ["Microsoft.Storage"]
       subnet_delegations = []

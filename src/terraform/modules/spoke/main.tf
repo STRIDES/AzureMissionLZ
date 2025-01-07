@@ -51,7 +51,7 @@ module "subnets" {
   source     = "../subnet"
   for_each   = var.subnets
 
-  name                 = "${local.subnet_prefix}-subnet-${each.value.name}"
+  name                 = each.value.exclude_prefix ? each.value.name : "${local.subnet_prefix}-subnet-${each.value.name}"
   location             = var.location
   resource_group_name  = var.spoke_rgname
   virtual_network_name = var.spoke_vnetname
