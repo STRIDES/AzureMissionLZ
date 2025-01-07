@@ -141,7 +141,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
 resource "azurerm_network_watcher_flow_log" "nsgfl" {
   depends_on = [azurerm_network_security_rule.nsgrules, azurerm_network_security_group.nsg]
 
-  name                 = "${azurerm_network_security_group.nsg.name}-flow-log"
+  name                 = "${trim(substr(azurerm_network_security_group.nsg.name, 0, 70), "-_")}-flow-log"
   location             = var.location
   network_watcher_name = "NetworkWatcher_${replace(var.location, " ", "")}"
   resource_group_name  = "NetworkWatcherRG"
