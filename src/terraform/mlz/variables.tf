@@ -440,11 +440,11 @@ variable "tier0_subnets" {
   }))
   default = {
     "identitySubnet" = {
-      name               = "identitySubnet"
-      service_endpoints  = ["Microsoft.Storage"]
-      subnet_delegations = []
-      exclude_prefix     = true
-
+      name                                           = "identitySubnet"
+      service_endpoints                              = ["Microsoft.Storage"]
+      subnet_delegations                             = []
+      exclude_prefix                                 = true
+      address_space                                  = []
       enforce_private_link_endpoint_network_policies = false
       enforce_private_link_service_network_policies  = false
 
@@ -516,11 +516,11 @@ variable "tier1_subnets" {
   }))
   default = {
     "operationsSubnet" = {
-      name               = "operationsSubnet"
-      service_endpoints  = ["Microsoft.Storage"]
-      subnet_delegations = []
-      exclude_prefix     = true
-
+      name                                           = "operationsSubnet"
+      service_endpoints                              = ["Microsoft.Storage"]
+      subnet_delegations                             = []
+      exclude_prefix                                 = true
+      address_space                                  = []
       enforce_private_link_endpoint_network_policies = false
       enforce_private_link_service_network_policies  = false
 
@@ -580,11 +580,11 @@ variable "tier2_subnets" {
   }))
   default = {
     "sharedServicesSubnet" = {
-      name               = "sharedServicesSubnet"
-      service_endpoints  = ["Microsoft.Storage"]
-      subnet_delegations = []
-      exclude_prefix     = true
-
+      name                                           = "sharedServicesSubnet"
+      service_endpoints                              = ["Microsoft.Storage"]
+      subnet_delegations                             = []
+      exclude_prefix                                 = true
+      address_space                                  = []
       enforce_private_link_endpoint_network_policies = false
       enforce_private_link_service_network_policies  = false
 
