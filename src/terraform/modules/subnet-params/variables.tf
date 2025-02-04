@@ -23,6 +23,7 @@ variable "name" {
 variable "address_space" {
   description = "Templated address space. If empty address space will be retrieved from Key Vault"
   type        = list(string)
+  default     = []
 }
 
 variable "default_nsg_rules" {
