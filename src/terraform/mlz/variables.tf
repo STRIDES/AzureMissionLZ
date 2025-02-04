@@ -429,9 +429,11 @@ variable "tier0_vnet_address_space" {
 variable "tier0_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
-    name              = string
-    service_endpoints = list(string)
-
+    name                                           = string
+    service_endpoints                              = list(string)
+    exclude_prefix                                 = bool
+    subnet_delegations                             = list(string)
+    address_space                                  = list(string)
     enforce_private_link_endpoint_network_policies = bool
     enforce_private_link_service_network_policies  = bool
 
@@ -505,9 +507,11 @@ variable "tier1_vnet_address_space" {
 variable "tier1_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
-    name              = string
-    service_endpoints = list(string)
-
+    name                                           = string
+    service_endpoints                              = list(string)
+    exclude_prefix                                 = bool
+    subnet_delegations                             = list(string)
+    address_space                                  = list(string)
     enforce_private_link_endpoint_network_policies = bool
     enforce_private_link_service_network_policies  = bool
 
@@ -569,9 +573,11 @@ variable "tier2_vnet_address_space" {
 variable "tier2_subnets" {
   description = "A complex object that describes subnets."
   type = map(object({
-    name              = string
-    service_endpoints = list(string)
-
+    name                                           = string
+    service_endpoints                              = list(string)
+    exclude_prefix                                 = bool
+    subnet_delegations                             = list(string)
+    address_space                                  = list(string)
     enforce_private_link_endpoint_network_policies = bool
     enforce_private_link_service_network_policies  = bool
 
