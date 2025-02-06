@@ -72,25 +72,26 @@ resource "azurerm_firewall" "firewall" {
   }
 }
 
-resource "random_id" "storageaccount" {
-  byte_length = 12
-}
+# resource "random_id" "storageaccount" {
+#   byte_length = 12
+# }
 
-resource "azurerm_storage_account" "loganalytics" {
-  name                      = format("%.24s", lower(replace("${azurerm_firewall.firewall.name}logs${random_id.storageaccount.id}", "/[[:^alnum:]]/", "")))
-  resource_group_name       = data.azurerm_resource_group.hub.name
-  location                  = var.location
-  account_kind              = "StorageV2"
-  account_tier              = "Standard"
-  account_replication_type  = "LRS"
-  enable_https_traffic_only = true
-  tags                      = var.tags
-}
+# JC Note: Using Centralized Log Analytics for Logs
+# resource "azurerm_storage_account" "loganalytics" {
+#   name                      = format("%.24s", lower(replace("${azurerm_firewall.firewall.name}logs${random_id.storageaccount.id}", "/[[:^alnum:]]/", "")))
+#   resource_group_name       = data.azurerm_resource_group.hub.name
+#   location                  = var.location
+#   account_kind              = "StorageV2"
+#   account_tier              = "Standard"
+#   account_replication_type  = "LRS"
+#   enable_https_traffic_only = true
+#   tags                      = var.tags
+# }
 
 resource "azurerm_monitor_diagnostic_setting" "firewall-diagnostics" {
-  name                           = "${azurerm_firewall.firewall.name}-fw-diagnostics"
-  target_resource_id             = "/subscriptions/${var.sub_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Network/azureFirewalls/${var.firewall_name}"
-  storage_account_id             = azurerm_storage_account.loganalytics.id
+  name               = "${azurerm_firewall.firewall.name}-fw-diagnostics"
+  target_resource_id = "/subscriptions/${var.sub_id}/resourceGroups/${var.resource_group_name}/providers/Microsoft.Network/azureFirewalls/${var.firewall_name}"
+  # storage_account_id             = azurerm_storage_account.loganalytics.id
   log_analytics_workspace_id     = var.log_analytics_workspace_resource_id
   eventhub_name                  = var.eventhub_name
   eventhub_authorization_rule_id = var.eventhub_namespace_authorization_rule_id
@@ -134,9 +135,9 @@ resource "azurerm_monitor_diagnostic_setting" "firewall-diagnostics" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "publicip-diagnostics" {
-  name                           = "${azurerm_public_ip.fw_client_pip.name}-pip-diagnostics"
-  target_resource_id             = azurerm_public_ip.fw_client_pip.id
-  storage_account_id             = azurerm_storage_account.loganalytics.id
+  name               = "${azurerm_public_ip.fw_client_pip.name}-pip-diagnostics"
+  target_resource_id = azurerm_public_ip.fw_client_pip.id
+  # storage_account_id             = azurerm_storage_account.loganalytics.id
   log_analytics_workspace_id     = var.log_analytics_workspace_resource_id
   eventhub_name                  = var.eventhub_name
   eventhub_authorization_rule_id = var.eventhub_namespace_authorization_rule_id
