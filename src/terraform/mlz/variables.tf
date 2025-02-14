@@ -66,6 +66,12 @@ variable "dns_server_list" {
   sensitive   = true
 }
 
+variable "firewall_policy_dns_servers" {
+  description = "List of IP addresses for firewall policy custom dns servers"
+  type        = list(string)
+  default     = []
+}
+
 #################################
 # Hub Configuration
 #################################

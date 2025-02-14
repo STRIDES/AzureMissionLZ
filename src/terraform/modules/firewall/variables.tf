@@ -62,6 +62,11 @@ variable "firewall_policy_name" {
   type        = string
 }
 
+variable "firewall_policy_dns_servers" {
+  description = "The DNS settings for the firewall policy"
+  type        = list(string)
+}
+
 variable "client_ipconfig_name" {
   description = "The name of the Firewall Client IP Configuration"
   type        = string

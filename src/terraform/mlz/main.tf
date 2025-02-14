@@ -417,6 +417,7 @@ module "firewall" {
   firewall_client_subnet_name     = module.hub-network.firewall_client_subnet_name
   firewall_management_subnet_name = module.hub-network.firewall_management_subnet_name
   firewall_policy_name            = var.firewall_policy_name
+  firewall_policy_dns_servers     = var.firewall_policy_dns_servers
 
   client_ipconfig_name = var.client_ipconfig_name
   client_publicip_name = var.client_publicip_name

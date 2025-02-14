@@ -44,7 +44,16 @@ resource "azurerm_firewall_policy" "firewallpolicy" {
   resource_group_name      = data.azurerm_resource_group.hub.name
   location                 = var.location
   sku                      = var.firewall_sku
-  threat_intelligence_mode = "Alert"
+  threat_intelligence_mode = "Deny"
+  dynamic "dns" {
+    for_each = var.firewall_policy_dns_servers != [] ? [1] : []
+    content {
+      servers = var.firewall_policy_dns_servers
+    }
+  }
+  intrusion_detection {
+    mode = "Deny"
+  }
 }
 
 resource "azurerm_firewall" "firewall" {
