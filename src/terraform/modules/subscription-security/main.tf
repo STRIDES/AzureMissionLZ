@@ -41,7 +41,8 @@ resource "azurerm_security_center_subscription_pricing" "defender" {
   resource_type = each.value
   lifecycle {
     ignore_changes = [
-      tier
+      tier,
+      subplan
     ]
   }
 }
