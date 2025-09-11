@@ -146,7 +146,8 @@ resource "azurerm_network_watcher_flow_log" "nsgfl" {
   network_watcher_name = "NetworkWatcher_${replace(var.location, " ", "")}"
   resource_group_name  = "NetworkWatcherRG"
 
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  target_resource_id   = azurerm_subnet.subnet.id
+  # network_security_group_id = azurerm_network_security_group.nsg.id
   storage_account_id        = var.flow_log_storage_id
   enabled                   = true
   version                   = 2
