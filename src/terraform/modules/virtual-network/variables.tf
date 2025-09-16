@@ -68,8 +68,3 @@ variable "log_analytics_workspace_location" {
   description = "The location of the log analytics workspace"
   type        = string
 }
-
-variable "log_analytics_workspace_resource_id" {
-  description = "The resource id of the log analytics workspace"
-  type        = string
-}
