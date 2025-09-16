@@ -67,10 +67,10 @@ variable "service_endpoints" {
   default     = null
 }
 
-variable "private_endpoint_network_policies_enabled" {
+variable "private_endpoint_network_policies" {
   description = "Enable or Disable network policies for the private endpoint on the subnet."
-  type        = bool
-  default     = false
+  type        = string
+  default     = "Disabled"
 }
 
 variable "private_link_service_network_policies_enabled" {
@@ -98,31 +98,32 @@ variable "log_analytics_storage_id" {
   sensitive   = true
 }
 
-variable "flow_log_storage_id" {
-  type      = string
-  default   = null
-  sensitive = true
-}
+## RM Note: Deprecated because of flow logs to VNet, will remove after testing
+# variable "flow_log_storage_id" {
+#   type      = string
+#   default   = null
+#   sensitive = true
+# }
 
-variable "log_analytics_workspace_id" {
-  description = "The id of the log analytics workspace"
-  type        = string
-}
+# variable "flow_log_retention_in_days" {
+#   description = "The number of days to retain flow log data"
+#   default     = "90"
+#   type        = number
+# }
 
-variable "log_analytics_workspace_location" {
-  description = "The location of the log analytics workspace"
-  type        = string
-}
+# variable "log_analytics_workspace_id" {
+#   description = "The id of the log analytics workspace"
+#   type        = string
+# }
+
+# variable "log_analytics_workspace_location" {
+#   description = "The location of the log analytics workspace"
+#   type        = string
+# }
 
 variable "log_analytics_workspace_resource_id" {
   description = "The resource id of the log analytics workspace"
   type        = string
-}
-
-variable "flow_log_retention_in_days" {
-  description = "The number of days to retain flow log data"
-  default     = "90"
-  type        = number
 }
 
 variable "eventhub_namespace_authorization_rule_id" {
