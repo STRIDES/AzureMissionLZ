@@ -21,7 +21,6 @@ resource "azurerm_virtual_network_dns_servers" "custom_dns" {
 # VNet Flowlogs
 
 resource "azurerm_network_watcher_flow_log" "vnetfl" {
-  depends_on = [azurerm_network_security_group.nsg]
 
   name                 = "${trim(substr(azurerm_virtual_network.vnet.name, 0, 70), "-_")}-flow-log"
   location             = var.location

@@ -17,6 +17,12 @@ variable "security_contact_email" {
   default     = "citcloudservicesazurealerts@mail.nih.gov"
 }
 
+variable "security_contact_name" {
+  description = "Name of the security contact."
+  type        = string
+  default     = "CIT Cloud Services"
+}
+
 variable "defender_tier" {
   description = "Whether Defender Standard or Free tier should be used."
   type        = string
