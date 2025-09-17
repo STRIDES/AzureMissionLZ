@@ -124,16 +124,16 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
       category = enabled_log.value
       # enabled  = true
 
-      # retention_policy {
-      #   days    = 0
-      #   enabled = false
-      # }
+      retention_policy {
+        days    = 0
+        enabled = false
+      }
     }
   }
   lifecycle {
     ignore_changes = [
       name,
-      log
+      enabled_log
     ]
   }
 }
