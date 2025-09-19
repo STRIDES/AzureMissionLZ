@@ -72,9 +72,9 @@ module "subnets" {
 
   firewall_ip_address = var.firewall_private_ip
 
-  # flow_log_storage_id                      = var.flow_log_storage_id
-  # log_analytics_workspace_id               = var.laws_workspace_id
-  # log_analytics_workspace_location         = var.laws_location
+  flow_log_storage_id                      = var.flow_log_storage_id
+  log_analytics_workspace_id               = var.laws_workspace_id
+  log_analytics_workspace_location         = var.laws_location
   log_analytics_workspace_resource_id      = var.laws_resource_id
   eventhub_name                            = var.eventhub_name
   eventhub_namespace_authorization_rule_id = var.eventhub_namespace_authorization_rule_id
