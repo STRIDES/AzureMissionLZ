@@ -138,36 +138,38 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
   }
 }
 
-# resource "azurerm_network_watcher_flow_log" "nsgfl" {
-#   depends_on = [azurerm_network_security_rule.nsgrules, azurerm_network_security_group.nsg]
+resource "azurerm_network_watcher_flow_log" "nsgfl" {
+  count      = var.historic_ngsfl ? 1 : 0 # Workaround to not create this resource with new subs
+  depends_on = [azurerm_network_security_rule.nsgrules, azurerm_network_security_group.nsg]
 
-#   name                 = "${trim(substr(azurerm_network_security_group.nsg.name, 0, 70), "-_")}-flow-log"
-#   location             = var.location
-#   network_watcher_name = "NetworkWatcher_${replace(var.location, " ", "")}"
-#   resource_group_name  = "NetworkWatcherRG"
+  name                 = "${trim(substr(azurerm_network_security_group.nsg.name, 0, 70), "-_")}-flow-log"
+  location             = var.location
+  network_watcher_name = "NetworkWatcher_${replace(var.location, " ", "")}"
+  resource_group_name  = "NetworkWatcherRG"
 
-#   target_resource_id = azurerm_subnet.subnet.id
-#   # network_security_group_id = azurerm_network_security_group.nsg.id
-#   storage_account_id = var.flow_log_storage_id
-#   enabled            = true
-#   version            = 2
+  target_resource_id = azurerm_subnet.subnet.id
+  # network_security_group_id = azurerm_network_security_group.nsg.id
+  storage_account_id = var.flow_log_storage_id
+  enabled            = true
+  version            = 2
 
-#   retention_policy {
-#     enabled = true
-#     days    = var.flow_log_retention_in_days
-#   }
+  retention_policy {
+    enabled = true
+    days    = var.flow_log_retention_in_days
+  }
 
-#   traffic_analytics {
-#     enabled               = true
-#     workspace_id          = var.log_analytics_workspace_id
-#     workspace_region      = var.log_analytics_workspace_location
-#     workspace_resource_id = var.log_analytics_workspace_resource_id
-#     interval_in_minutes   = 10
-#   }
-#   tags = var.tags
-#   lifecycle {
-#     ignore_changes = [
-#       name
-#     ]
-#   }
-# }
+  traffic_analytics {
+    enabled               = true
+    workspace_id          = var.log_analytics_workspace_id
+    workspace_region      = var.log_analytics_workspace_location
+    workspace_resource_id = var.log_analytics_workspace_resource_id
+    interval_in_minutes   = 10
+  }
+  tags = var.tags
+  lifecycle {
+    prevent_destroy = true # Put in so that older subscriptions won't delete nsg flow logs
+    ignore_changes = [
+      name
+    ]
+  }
+}

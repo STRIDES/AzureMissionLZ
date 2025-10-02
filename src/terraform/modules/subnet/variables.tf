@@ -99,27 +99,27 @@ variable "log_analytics_storage_id" {
 }
 
 ## RM Note: Deprecated because of flow logs to VNet, will remove after testing
-# variable "flow_log_storage_id" {
-#   type      = string
-#   default   = null
-#   sensitive = true
-# }
+variable "flow_log_storage_id" {
+  type      = string
+  default   = null
+  sensitive = true
+}
 
-# variable "flow_log_retention_in_days" {
-#   description = "The number of days to retain flow log data"
-#   default     = "90"
-#   type        = number
-# }
+variable "flow_log_retention_in_days" {
+  description = "The number of days to retain flow log data"
+  default     = "90"
+  type        = number
+}
 
-# variable "log_analytics_workspace_id" {
-#   description = "The id of the log analytics workspace"
-#   type        = string
-# }
+variable "log_analytics_workspace_id" {
+  description = "The id of the log analytics workspace"
+  type        = string
+}
 
-# variable "log_analytics_workspace_location" {
-#   description = "The location of the log analytics workspace"
-#   type        = string
-# }
+variable "log_analytics_workspace_location" {
+  description = "The location of the log analytics workspace"
+  type        = string
+}
 
 variable "log_analytics_workspace_resource_id" {
   description = "The resource id of the log analytics workspace"
@@ -143,4 +143,10 @@ variable "subnet_delegations" {
   description = "List of Microsoft Services to delegate subnet to."
   type        = list(string)
   default     = []
+}
+
+variable "historic_ngsfl" {
+  description = "Whether the subscription has nsgflow logs created already"
+  type        = bool
+  default     = false
 }
