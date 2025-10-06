@@ -139,7 +139,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
 }
 
 resource "azurerm_network_watcher_flow_log" "nsgfl" {
-  count      = 0 # Workaround to not create this resource with new subs
+  count      = var.historic_ngsfl ? 1 : 0 # Workaround to not create this resource with new subs
   depends_on = [azurerm_network_security_rule.nsgrules, azurerm_network_security_group.nsg]
 
   name                 = "${trim(substr(azurerm_network_security_group.nsg.name, 0, 70), "-_")}-flow-log"
@@ -167,9 +167,9 @@ resource "azurerm_network_watcher_flow_log" "nsgfl" {
   }
   tags = var.tags
   lifecycle {
-    ignore_changes = [
-      name, count
-    ]
     prevent_destroy = true # Put in so that older subscriptions won't delete nsg flow logs
+    ignore_changes = [
+      name
+    ]
   }
 }

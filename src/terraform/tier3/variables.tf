@@ -195,3 +195,9 @@ variable "ipam_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "historic_ngsfl" {
+  description = "Whether the subscription has nsgflow logs created already"
+  type        = bool
+  default     = false
+}
