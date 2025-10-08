@@ -72,7 +72,6 @@ module "subnets" {
 
   firewall_ip_address = var.firewall_private_ip
 
-  historic_ngsfl                           = var.historic_ngsfl
   flow_log_storage_id                      = var.flow_log_storage_id
   log_analytics_workspace_id               = var.laws_workspace_id
   log_analytics_workspace_location         = var.laws_location

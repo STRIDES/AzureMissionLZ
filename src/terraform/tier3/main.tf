@@ -145,7 +145,6 @@ module "spoke-network-t3" {
   dns_server_list          = var.dns_server_list
   tags                     = var.tags
   ipam_tags                = var.ipam_tags
-  historic_ngsfl           = var.historic_ngsfl
 }
 
 # JC Note: Re enable gateway transit once ExpressRoute Gateway is present.
