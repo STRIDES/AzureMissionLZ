@@ -98,7 +98,6 @@ variable "log_analytics_storage_id" {
   sensitive   = true
 }
 
-## RM Note: Deprecated because of flow logs to VNet, will remove after testing
 variable "flow_log_storage_id" {
   type      = string
   default   = null
