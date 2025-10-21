@@ -54,7 +54,7 @@ resource "azurerm_subnet" "subnet" {
 
   service_endpoints = var.service_endpoints
 
-  private_endpoint_network_policies_enabled     = var.private_endpoint_network_policies_enabled
+  private_endpoint_network_policies             = var.private_endpoint_network_policies
   private_link_service_network_policies_enabled = var.private_link_service_network_policies_enabled
 
   dynamic "delegation" {
@@ -118,11 +118,11 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
   eventhub_name                  = var.eventhub_name
   eventhub_authorization_rule_id = var.eventhub_namespace_authorization_rule_id
 
-  dynamic "log" {
+  dynamic "enabled_log" {
     for_each = local.nsg_log_categories
     content {
-      category = log.value
-      enabled  = true
+      category = enabled_log.value
+      # enabled  = true
 
       retention_policy {
         days    = 0
@@ -133,42 +133,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
   lifecycle {
     ignore_changes = [
       name,
-      log
+      enabled_log
     ]
   }
 }
-
-// RM Note: Commenting this out until flowlogs are updated due to 2025 deprecation
-//resource "azurerm_network_watcher_flow_log" "nsgfl" {
-//  depends_on = [azurerm_network_security_rule.nsgrules, azurerm_network_security_group.nsg]
-//
-//  name                 = "${trim(substr(azurerm_network_security_group.nsg.name, 0, 70), "-_")}-flow-log"
-//  location             = var.location
-//  network_watcher_name = "NetworkWatcher_${replace(var.location, " ", "")}"
-//  resource_group_name  = "NetworkWatcherRG"
-//
-//  target_resource_id   = azurerm_subnet.subnet.id
-//  # network_security_group_id = azurerm_network_security_group.nsg.id
-//  storage_account_id        = var.flow_log_storage_id
-//  enabled                   = true
-//  version                   = 2
-//
-//  retention_policy {
-//    enabled = true
-//    days    = var.flow_log_retention_in_days
-//  }
-//
-//  traffic_analytics {
-//    enabled               = true
-//    workspace_id          = var.log_analytics_workspace_id
-//    workspace_region      = var.log_analytics_workspace_location
-//    workspace_resource_id = var.log_analytics_workspace_resource_id
-//    interval_in_minutes   = 10
-//  }
-//  tags = var.tags
-//  lifecycle {
-//    ignore_changes = [
-//      name
-//    ]
-//  }
-//}

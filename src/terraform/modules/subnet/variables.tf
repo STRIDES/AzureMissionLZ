@@ -67,10 +67,10 @@ variable "service_endpoints" {
   default     = null
 }
 
-variable "private_endpoint_network_policies_enabled" {
+variable "private_endpoint_network_policies" {
   description = "Enable or Disable network policies for the private endpoint on the subnet."
-  type        = bool
-  default     = false
+  type        = string
+  default     = "Disabled"
 }
 
 variable "private_link_service_network_policies_enabled" {

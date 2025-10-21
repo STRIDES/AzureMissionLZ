@@ -27,6 +27,7 @@ resource "azurerm_role_assignment" "sub_owner" {
 # Enable Security Email Alerts
 
 resource "azurerm_security_center_contact" "security_contact" {
+  name                = var.security_contact_name
   email               = var.security_contact_email
   alert_notifications = true
   alerts_to_admins    = true
