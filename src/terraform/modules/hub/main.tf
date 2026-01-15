@@ -2,11 +2,15 @@
 # Licensed under the MIT License.
 
 module "hub-network" {
-  source                              = "../virtual-network"
-  location                            = var.location
-  resource_group_name                 = var.resource_group_name
-  vnet_name                           = var.vnet_name
-  vnet_address_space                  = var.vnet_address_space
+  source              = "../virtual-network"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  vnet_name           = var.vnet_name
+  vnet_address_space  = var.vnet_address_space
+
+  log_analytics_workspace_id       = azurerm_log_analytics_workspace.laws.workspace_id
+  log_analytics_workspace_location = var.location
+
   log_analytics_workspace_resource_id = var.log_analytics_workspace_resource_id
   dns_server_list                     = var.dns_server_list
   tags                                = var.tags
@@ -29,11 +33,12 @@ resource "azurerm_subnet" "fw_mgmt" {
 }
 
 resource "azurerm_route_table" "routetable" {
-  count                         = var.create_firewall ? 1 : 0
-  name                          = "FirewallRouteTable"
-  resource_group_name           = azurerm_subnet.fw_mgmt[0].resource_group_name
-  location                      = var.location
-  disable_bgp_route_propagation = true
+  count               = var.create_firewall ? 1 : 0
+  name                = "FirewallRouteTable"
+  resource_group_name = azurerm_subnet.fw_mgmt[0].resource_group_name
+  location            = var.location
+  # disable_bgp_route_propagation = true
+  bgp_route_propagation_enabled = false
   tags                          = var.tags
 }
 
